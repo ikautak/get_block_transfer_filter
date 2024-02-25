@@ -7,8 +7,19 @@ use axum::{
 };
 //use std::fs::File;
 //use std::io::Write;
+use clap::Parser;
+use std::net::IpAddr;
 use std::time::Instant;
 use ureq;
+
+#[derive(Parser, Debug)]
+#[clap(version, about = "solana getBlock proxy")]
+struct Args {
+    #[clap(short, long)]
+    address: IpAddr,
+    #[clap(short, long)]
+    port: u16,
+}
 
 fn has_sol_transfer(tx: &ureq::serde_json::Value) -> Result<bool> {
     let pre_balances = tx["meta"]["preBalances"]
@@ -161,11 +172,13 @@ async fn health_check() -> impl IntoResponse {
 
 #[tokio::main]
 async fn main() {
+    let args = Args::parse();
+
     let app = Router::new()
         .route("/", post(get_block))
         .route("/health", get(health_check));
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:4000")
+    let listener = tokio::net::TcpListener::bind((args.address, args.port))
         .await
         .expect("bind failed");
     println!("listening on {}", listener.local_addr().unwrap());

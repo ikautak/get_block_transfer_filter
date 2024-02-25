@@ -1,5 +1,5 @@
 [package]
-name = "get_block_omit_vote"
+name = "get_block_transfer_filter"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.80"
 axum = "0.7.4"
+clap = { version = "4.4.8", features = ["derive"] }
 #solana-client = "1.18.2"
 #solana-sdk = "1.18.2"
 tokio = { version = "1", features = ["full"] }
